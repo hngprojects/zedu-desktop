@@ -1,4 +1,4 @@
-# flutter_starter
+# Zedu Desktop
 
 A Flutter starter template for building apps with clean arch.
 
