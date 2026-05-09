@@ -2,6 +2,7 @@ export 'api_utils/api_utils.dart';
 export 'config/config.dart';
 export 'locator/locator.dart';
 export 'navigator/navigator.dart';
+export 'utils/utils.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:flutter/widgets.dart';
