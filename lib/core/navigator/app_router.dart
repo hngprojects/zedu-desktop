@@ -5,11 +5,13 @@ class AppRouter {
   const AppRouter._();
 
   static const home = '/';
+  static const login = '/login';
 
   static final router = GoRouter(
-    initialLocation: home,
+    initialLocation: login,
     routes: [
-      GoRoute(path: home, builder: (_, _) => const TasksView()),
+      GoRoute(path: login, builder: (context, state) => const LoginView()),
+      GoRoute(path: home, builder: (context, state) => const TasksView()),
     ],
   );
 }

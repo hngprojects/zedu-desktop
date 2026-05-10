@@ -1,83 +1,55 @@
 import 'package:flutter_starter/core/core.dart';
-import 'package:flutter_starter/features/features.dart';
+import 'package:flutter_starter/core/navigator/app_router.dart';
+import 'package:flutter_starter/features/auth/presentation/providers/auth_providers_di.dart';
 
 class TasksView extends ConsumerWidget {
   const TasksView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasks = ref.watch(tasksProvider);
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Starter'),
+        title: const Text('Welcome to Zedu'),
         actions: [
           IconButton(
-            onPressed: () => ref.invalidate(tasksProvider),
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh tasks',
+            onPressed: () async {
+              await ref.read(authNotifierProvider.notifier).logout();
+              if (context.mounted) {
+                context.go(AppRouter.login);
+              }
+            },
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
           ),
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TasksHeader(textTheme: textTheme),
-              const SizedBox(height: 24),
-              Expanded(
-                child: tasks.when(
-                  data: (tasks) => _TaskList(tasks: tasks),
-                  error: (error, _) => _FailureMessage(message: '$error'),
-                  loading: () => const LinearProgressIndicator(),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Welcome to Zedu',
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  'You are now logged in. Tap the logout button above to return to the login screen.',
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TaskList extends StatelessWidget {
-  const _TaskList({required this.tasks});
-
-  final List<TaskModel> tasks;
-
-  @override
-  Widget build(BuildContext context) {
-    if (tasks.isEmpty) {
-      return const Center(child: Text('No tasks yet.'));
-    }
-
-    return ListView.separated(
-      itemCount: tasks.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final task = tasks[index];
-
-        return TaskTile(task: task);
-      },
-    );
-  }
-}
-
-class _FailureMessage extends StatelessWidget {
-  const _FailureMessage({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Text(message, style: TextStyle(color: colorScheme.error)),
     );
   }
 }

@@ -24,8 +24,8 @@ class TasksDatasource implements TasksRepo {
           .whereType<Map<String, dynamic>>()
           .map(TaskModel.fromJson)
           .toList();
-    } on FormatException catch (error) {
-      throw ApiFailure.fromFormatException(error);
+    } on ApiFailure {
+      rethrow;
     }
   }
 }
