@@ -9,14 +9,30 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remote;
 
   @override
-  Future<Result<User>> login({
+  Future<Result<AuthSession>> login({
     required String email,
     required String password,
   }) async {
     try {
       final response = await _remote.login(email: email, password: password);
 
-      return Success(response.user.toEntity());
+      return Success(AuthSession(
+        user: response.user.toEntity(),
+        accessToken: response.accessToken,
+        accessTokenExpiresIn: response.accessTokenExpiresIn,
+      ));
+    } on ApiFailure catch (failure) {
+      return Failure(failure);
+    } catch (error) {
+      return Failure(ApiFailure.unknown(error));
+    }
+  }
+
+  @override
+  Future<Result<User>> getCurrentUser() async {
+    try {
+      final user = await _remote.me();
+      return Success(user.toEntity());
     } on ApiFailure catch (failure) {
       return Failure(failure);
     } catch (error) {

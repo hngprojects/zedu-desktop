@@ -1,12 +1,13 @@
-// data/datasources/auth_remote_datasource.dart
 import 'package:flutter_starter/core/core.dart';
 import 'package:flutter_starter/features/auth/data/models/login_response_model.dart';
+import 'package:flutter_starter/features/auth/data/models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource {
   Future<LoginResponseModel> login({
     required String email,
     required String password,
   });
+  Future<UserModel> me();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -40,8 +41,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on ApiFailure {
       rethrow;
     } catch (error) {
-      // TypeError, FormatException, NoSuchMethodError, anything from fromJson
       throw ApiFailure.fromParsingError(error, path: '/auth/login');
+    }
+  }
+
+  @override
+  Future<UserModel> me() async {
+    try {
+      if (_config.usesMockData) {
+        final loginResponse = LoginResponseModel.fromJson(
+          LoginResponseModel.mockLoginResponse,
+        );
+        return loginResponse.user;
+      }
+
+      final response = await _apiBaseService.get<Map<String, dynamic>>(
+        path: '/auth/me',
+      );
+
+      final data = response.data['data'] as Map<String, dynamic>;
+      return UserModel.fromJson(data);
+    } on ApiFailure {
+      rethrow;
+    } catch (error) {
+      throw ApiFailure.fromParsingError(error, path: '/auth/me');
     }
   }
 }
