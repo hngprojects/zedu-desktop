@@ -22,10 +22,10 @@ class AppConfig {
         : 'https://example.com/api';
 
     final usesMockData = defineUsesMock.isNotEmpty
-        ? _parseBool(defineUsesMock, defaultValue: true)
+        ? _parseBool(defineUsesMock, defaultValue: false)
         : envUsesMock != null && envUsesMock.isNotEmpty
-        ? _parseBool(envUsesMock, defaultValue: true)
-        : true;
+        ? _parseBool(envUsesMock, defaultValue: false)
+        : false;
 
     return AppConfig(apiBaseUrl: apiBaseUrl, usesMockData: usesMockData);
   }

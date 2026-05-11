@@ -1,5 +1,5 @@
-import 'package:flutter_starter/core/core.dart';
-import 'package:flutter_starter/features/features.dart';
+import 'package:zedu/core/core.dart';
+import 'package:zedu/features/features.dart';
 
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>(
   (ref) => AuthRemoteDataSourceImpl(
@@ -12,5 +12,6 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepositoryImpl(remote: ref.watch(authRemoteDataSourceProvider)),
 );
 
-final authNotifierProvider =
-    NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
+final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);

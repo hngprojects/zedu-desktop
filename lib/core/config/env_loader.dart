@@ -1,4 +1,4 @@
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 /// Loads [dotenv] from project-root `.env` / `.env.example` declared in
 /// `pubspec.yaml` under `flutter.assets` (see Flutter asset docs).

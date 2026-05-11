@@ -1,4 +1,4 @@
-import 'package:flutter_starter/features/features.dart';
+import 'package:zedu/features/features.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
 

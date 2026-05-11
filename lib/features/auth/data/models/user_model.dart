@@ -1,6 +1,6 @@
 // data/models/user_model.dart
-import 'package:flutter_starter/features/auth/data/models/organisation_model.dart';
-import 'package:flutter_starter/features/auth/domain/entities/user.dart';
+import 'package:zedu/features/auth/data/models/organisation_model.dart';
+import 'package:zedu/features/auth/domain/entities/user.dart';
 
 class UserModel {
   const UserModel({

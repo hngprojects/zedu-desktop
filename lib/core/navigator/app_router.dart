@@ -1,5 +1,5 @@
-import 'package:flutter_starter/features/features.dart';
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/features/features.dart';
+import 'package:zedu/core/core.dart';
 
 class AppRouter {
   const AppRouter._();
@@ -11,7 +11,6 @@ class AppRouter {
     initialLocation: login,
     routes: [
       GoRoute(path: login, builder: (context, state) => const LoginView()),
-      GoRoute(path: home, builder: (context, state) => const TasksView()),
     ],
   );
 }
