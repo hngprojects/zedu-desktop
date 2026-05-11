@@ -41,7 +41,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {'email': email, 'password': password},
       );
 
-      return LoginResponseModel.fromJson(response.data['data']);
+      final payload = response.data['data'] as Map<String, dynamic>;
+      return LoginResponseModel.fromJson(payload);
     } on ApiFailure {
       rethrow;
     } catch (error) {
