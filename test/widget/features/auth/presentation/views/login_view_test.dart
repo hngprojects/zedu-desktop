@@ -32,9 +32,7 @@ class FakeAuthNotifier extends AuthNotifier {
 Widget buildLoginViewUnderTest({FakeAuthNotifier? notifier}) {
   return ProviderScope(
     overrides: [
-      authNotifierProvider.overrideWith(
-        () => notifier ?? FakeAuthNotifier(),
-      ),
+      authNotifierProvider.overrideWith(() => notifier ?? FakeAuthNotifier()),
     ],
     child: const MaterialApp(home: LoginView()),
   );
@@ -42,7 +40,9 @@ Widget buildLoginViewUnderTest({FakeAuthNotifier? notifier}) {
 
 void main() {
   group('LoginView', () {
-    testWidgets('renders form fields and login button when unauthenticated', (tester) async {
+    testWidgets('renders form fields and login button when unauthenticated', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildLoginViewUnderTest());
       await tester.pump();
 
@@ -52,7 +52,9 @@ void main() {
       expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
     });
 
-    testWidgets('shows loading spinner when auth status is unknown', (tester) async {
+    testWidgets('shows loading spinner when auth status is unknown', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildLoginViewUnderTest(
           notifier: FakeAuthNotifier(
@@ -66,7 +68,9 @@ void main() {
       expect(find.text('Login to Zedu'), findsNothing);
     });
 
-    testWidgets('shows validation errors when submitting empty form', (tester) async {
+    testWidgets('shows validation errors when submitting empty form', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(1440, 1024));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -82,7 +86,9 @@ void main() {
       expect(find.text('Password is required'), findsOneWidget);
     });
 
-    testWidgets('calls login with correct credentials when form is valid', (tester) async {
+    testWidgets('calls login with correct credentials when form is valid', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(1440, 1024));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -101,7 +107,10 @@ void main() {
       );
       await tester.pump();
 
-      await tester.enterText(find.byType(TextFormField).at(0), 'user@example.com');
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'user@example.com',
+      );
       await tester.enterText(find.byType(TextFormField).at(1), 'Secret123');
 
       final loginButton = find.widgetWithText(ElevatedButton, 'Login');

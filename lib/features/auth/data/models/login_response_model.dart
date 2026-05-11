@@ -59,7 +59,7 @@ class LoginResponseModel {
         "credit_balance": 10,
         "channels_count": 1,
         "total_messages_count": 0,
-        "org_roles": [],
+        "org_roles": <Map<String, dynamic>>[],
         "pinned": false,
         "Users": null,
         "created_at": "2026-05-10T02:43:02.443874+02:00",

@@ -41,24 +41,39 @@ abstract final class AppLogger {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) =>
-      _log(LogLevel.warning, message, tag: tag, error: error, stackTrace: stackTrace);
+  }) => _log(
+    LogLevel.warning,
+    message,
+    tag: tag,
+    error: error,
+    stackTrace: stackTrace,
+  );
 
   static void e(
     String message, {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) =>
-      _log(LogLevel.error, message, tag: tag, error: error, stackTrace: stackTrace);
+  }) => _log(
+    LogLevel.error,
+    message,
+    tag: tag,
+    error: error,
+    stackTrace: stackTrace,
+  );
 
   static void f(
     String message, {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) =>
-      _log(LogLevel.fatal, message, tag: tag, error: error, stackTrace: stackTrace);
+  }) => _log(
+    LogLevel.fatal,
+    message,
+    tag: tag,
+    error: error,
+    stackTrace: stackTrace,
+  );
 
   static void _log(
     LogLevel level,
@@ -80,11 +95,11 @@ abstract final class AppLogger {
   }
 
   static String _prefix(LogLevel level) => switch (level) {
-        LogLevel.verbose => '\x1B[37m[V] ',   // grey
-        LogLevel.debug   => '\x1B[36m[D] ',   // cyan
-        LogLevel.info    => '\x1B[32m[I] ',   // green
-        LogLevel.warning => '\x1B[33m[W] ',   // yellow
-        LogLevel.error   => '\x1B[31m[E] ',   // red
-        LogLevel.fatal   => '\x1B[1;31m[F] ', // bold bright red
-      };
+    LogLevel.verbose => '\x1B[37m[V] ', // grey
+    LogLevel.debug => '\x1B[36m[D] ', // cyan
+    LogLevel.info => '\x1B[32m[I] ', // green
+    LogLevel.warning => '\x1B[33m[W] ', // yellow
+    LogLevel.error => '\x1B[31m[E] ', // red
+    LogLevel.fatal => '\x1B[1;31m[F] ', // bold bright red
+  };
 }
