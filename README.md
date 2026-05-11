@@ -142,8 +142,8 @@ Every folder that exposes reusable Dart files should have a barrel file.
 Use **exactly these two root-barrel imports** everywhere you need shared core plus feature exports (same order and URIs as `lib/features/example_tasks/data/tasks_datasource.dart`):
 
 ```dart
-import 'package:flutter_starter/core/core.dart';
-import 'package:flutter_starter/features/features.dart';
+import 'package:zedu/core/core.dart';
+import 'package:zedu/features/features.dart';
 ```
 
 If you rename the app in `pubspec.yaml`, update the `package:` name in both lines to match. Narrower barrels are only for real import cycles or boundary clarity—this pair stays the default.
@@ -198,7 +198,7 @@ USE_MOCK_DATA=true
 
 ## Clone
 
-The GitHub repo root **is** this Flutter project: `pubspec.yaml` and `lib/` sit at the top level. After cloning, `cd` into the repo folder only—there is no extra nested `flutter_starter/` directory inside the clone.
+The GitHub repo root **is** this Flutter project: `pubspec.yaml` and `lib/` sit at the top level. After cloning, `cd` into the repo folder only—there is no extra nested `zedu/` directory inside the clone.
 
 ```sh
 git clone https://github.com/hngprojects/flutter-starter.git
@@ -241,4 +241,3 @@ Tests should mirror the app structure:
 - `test/widget`: views and reusable widgets
 
 Mock dependencies at the layer boundary being tested.
-

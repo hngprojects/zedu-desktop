@@ -1,15 +1,16 @@
-import 'package:flutter_starter/features/features.dart';
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/features/features.dart';
+import 'package:zedu/core/core.dart';
 
 class AppRouter {
   const AppRouter._();
 
   static const home = '/';
+  static const login = '/login';
 
   static final router = GoRouter(
-    initialLocation: home,
+    initialLocation: login,
     routes: [
-      GoRoute(path: home, builder: (_, _) => const TasksView()),
+      GoRoute(path: login, builder: (context, state) => const LoginView()),
     ],
   );
 }

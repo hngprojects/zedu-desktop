@@ -1,5 +1,4 @@
-import 'package:flutter_starter/app/theme/app_theme.dart';
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -7,7 +6,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Starter',
+      debugShowCheckedModeBanner: false,
+      title: 'Zedu',
       theme: AppTheme.light,
       routerConfig: AppRouter.router,
     );
