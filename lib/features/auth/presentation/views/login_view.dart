@@ -1,10 +1,7 @@
-import 'package:flutter_starter/core/core.dart';
-import 'package:flutter_starter/core/utils/sizing_utils.dart';
-import 'package:flutter_starter/core/widgets/app_button.dart';
-import 'package:flutter_starter/core/widgets/app_text_field.dart';
-import 'package:flutter_starter/features/auth/presentation/components/components.dart';
-import 'package:flutter_starter/features/auth/presentation/providers/auth_providers_di.dart';
-import 'package:flutter_starter/features/auth/presentation/providers/auth_state.dart';
+import 'package:zedu/core/core.dart';
+import 'package:zedu/core/theme/app_typography.dart';
+import 'package:zedu/core/utils/validators.dart';
+import 'package:zedu/features/features.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -26,13 +23,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
     super.dispose();
   }
 
-  void _showMessage(String message) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
   Future<void> _onLoginPressed() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -49,7 +39,19 @@ class _LoginViewState extends ConsumerState<LoginView> {
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
       if (previous?.status != AuthStatus.authenticated &&
           next.status == AuthStatus.authenticated) {
+        AppToastService.show(
+          context,
+          type: AppToastType.success,
+          message: 'Logged in successfully!',
+        );
         context.go(AppRouter.home);
+      }
+      if (next.error != null && previous?.error != next.error) {
+        AppToastService.show(
+          context,
+          type: AppToastType.error,
+          message: next.error!,
+        );
       }
     });
 
@@ -67,71 +69,87 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 68, vertical: 28),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: SafeArea(
+          child: Padding(
+            padding: context.symmetric(horizontal: 68, vertical: 28),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset(
-                  'assets/pngs/zedu_logo.png',
-                  width: 88,
-                  height: 31,
-                  fit: BoxFit.contain,
+                Image.asset('assets/pngs/zedu_logo.png', width: 83, height: 31),
+                Text.rich(
+                  TextSpan(
+                    text: 'Already have an account? ',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: context.colors.textPrimary,
+                      fontFamily: FontFamily.roboto,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Sign up',
+                        style: context.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w400,
+                          color: context.colors.primary,
+                          fontFamily: FontFamily.roboto,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(),
-                const Text('Already have an account?, Sign up'),
               ],
             ),
-            const SizedBox(height: 16),
-            // Center(
-            //   child:
-            // ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 520),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 28),
-                  Text(
-                    'Login to Zedu',
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: Color(0xff1E1E1E),
-                      fontWeight: FontWeight.w700,
-                    ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                context.gapV(136),
+                Text('Login to Zedu', style: context.textTheme.headlineMedium),
+                context.gapV(8),
+                Text(
+                  'Welcome back! We’ve missed you!',
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colors.textSecondary,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Welcome back! We’ve missed you!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xff0A090B),
-                      fontWeight: FontWeight.w400,
-                      height: 2,
-                    ),
+                ),
+                context.gapV(32),
+                SocialAuthButton(
+                  icon: 'assets/svgs/google_logo.svg',
+                  label: 'Sign up with Google',
+                  onPressed: () => AppToastService.show(
+                    context,
+                    type: AppToastType.info,
+                    message: 'Google sign in is not available yet.',
                   ),
-                  context.verticalSpace(32),
-                  SocialAuthButton(
-                    icon: const Icon(Icons.g_mobiledata),
-                    label: 'Sign up with Google',
-                    onPressed: () =>
-                        _showMessage('Google sign in is not available yet.'),
+                ),
+                context.gapV(12),
+                SocialAuthButton(
+                  icon: 'assets/svgs/apple_logo.svg',
+                  label: 'Sign up with Apple',
+                  onPressed: () => AppToastService.show(
+                    context,
+                    type: AppToastType.info,
+                    message: 'Apple sign in is not available yet.',
                   ),
-                  const SizedBox(height: 12),
-                  SocialAuthButton(
-                    icon: const Icon(Icons.apple),
-                    label: 'Sign up with Apple',
-                    onPressed: () =>
-                        _showMessage('Apple sign in is not available yet.'),
-                  ),
-                  const SizedBox(height: 26),
-                  Row(
+                ),
+                context.gapV(26),
+                Padding(
+                  padding: context.symmetric(horizontal: 100, vertical: 0),
+                  child: Row(
                     children: [
                       Expanded(
-                        child: Divider(color: Color(0xffE5E7EB), height: 0.67),
+                        child: Divider(
+                          color: context.colors.divider,
+                          height: 0.67,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -145,101 +163,91 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         ),
                       ),
                       Expanded(
-                        child: Divider(color: Color(0xffE5E7EB), height: 0.67),
+                        child: Divider(
+                          color: context.colors.divider,
+                          height: 0.67,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 26),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AppTextField(
-                          controller: _emailController,
-                          label: 'Email address',
-                          hint: 'Enter your email address',
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter your email.';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        AppTextField(
-                          isPassword: true,
-                          controller: _passwordController,
-                          label: 'Password',
-                          hint: 'Password',
-                          textInputAction: TextInputAction.done,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter your password.';
-                            }
-                            return null;
-                          },
-                        ),
-                        context.verticalSpace(8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _rememberMe,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _rememberMe = value ?? false;
-                                    });
-                                  },
-                                ),
-                                const Text('Remember me'),
-                              ],
-                            ),
-                            TextButton(
-                              onPressed: () => _showMessage(
-                                'Forgot password is not implemented yet.',
+                ),
+                context.gapV(26),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppTextField(
+                        controller: _emailController,
+                        label: 'Email address',
+                        hint: 'Enter your email address',
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) =>
+                            Validators.validateEmail(context, value),
+                      ),
+                      context.gapV(16),
+                      AppTextField(
+                        isPassword: true,
+                        controller: _passwordController,
+                        label: 'Password',
+                        hint: 'Password',
+                        textInputAction: TextInputAction.done,
+                        validator: (value) =>
+                            Validators.validatePassword(context, value),
+                      ),
+                      context.gapV(8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value ?? false;
+                                  });
+                                },
                               ),
-                              child: const Text('Forgot Password?'),
+                              const Text('Remember me'),
+                            ],
+                          ),
+                          Text(
+                            'Forgot Password?',
+                            style: context.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              color: context.colors.primary,
+                              fontFamily: FontFamily.roboto,
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (authState.error != null) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      authState.error!,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.error,
-                        fontWeight: FontWeight.w600,
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                  const SizedBox(height: 18),
-                  AppButton(
-                    label: 'Login',
-                    loading: authState.isLoading,
-                    onPressed: _onLoginPressed,
+                    ],
                   ),
-                  const SizedBox(height: 14),
-                  Center(
-                    child: TextButton(
-                      onPressed: () => _showMessage(
-                        'Magic link login is not implemented yet.',
-                      ),
-                      child: const Text('Login with magic link'),
+                ),
+                context.gapV(18),
+                AppButton(
+                  label: 'Login',
+                  loading: authState.isLoading,
+                  onPressed: _onLoginPressed,
+                ),
+                context.gapV(12),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Login with magic link',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: context.colors.primary,
+                      fontFamily: FontFamily.roboto,
                     ),
                   ),
-                ],
-              ),
+                ),
+                context.gapV(32),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

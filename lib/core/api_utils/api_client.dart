@@ -1,4 +1,4 @@
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 class ApiBaseService {
   ApiBaseService({required AppConfig config, Dio? dio})
@@ -108,8 +108,19 @@ class ApiBaseService {
         ),
       );
 
+      final responseData = response.data;
+      if (responseData is Map<String, dynamic> &&
+          responseData['status'] == 'error') {
+        throw ApiFailure(
+          message: responseData['message'] as String? ?? 'Request failed.',
+          statusCode: responseData['status_code'] as int?,
+          path: path,
+          kind: ApiFailureKind.client,
+        );
+      }
+
       return ApiResponseModel<T>(
-        data: response.data as T,
+        data: responseData as T,
         statusCode: response.statusCode ?? 0,
         message: response.statusMessage,
       );

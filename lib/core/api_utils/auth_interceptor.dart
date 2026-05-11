@@ -1,4 +1,4 @@
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({required SecureStorageService storage}) : _storage = storage;
@@ -19,10 +19,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
       await _storage.clearAll();
       onUnauthorized?.call();

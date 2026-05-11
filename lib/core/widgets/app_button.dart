@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_starter/app/theme/app_palette.dart';
-
 // ============================================================
 // AppButton — Reusable button for EventRun
 // ============================================================
@@ -30,6 +27,8 @@ import 'package:flutter_starter/app/theme/app_palette.dart';
 //   )
 // ============================================================
 
+import 'package:zedu/core/core.dart';
+
 enum _AppButtonVariant { filled, outlined, ghost }
 
 class AppButton extends StatelessWidget {
@@ -42,7 +41,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.expand = true,
-    this.height = 52,
+    this.height = 57,
     this.style,
   }) : _variant = _AppButtonVariant.filled;
 
@@ -55,7 +54,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.expand = true,
-    this.height = 52,
+    this.height = 57,
     this.style,
   }) : _variant = _AppButtonVariant.outlined;
 
@@ -68,7 +67,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.expand = true,
-    this.height = 48,
+    this.height = 57,
     this.style,
   }) : _variant = _AppButtonVariant.ghost;
 
@@ -76,8 +75,9 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool loading;
   final bool disabled;
-  final IconData? leading;
-  final IconData? trailing;
+  final Widget? leading;
+  final Widget? trailing;
+
   final bool expand;
   final double height;
   final ButtonStyle? style;
@@ -92,20 +92,7 @@ class AppButton extends StatelessWidget {
     Widget button = switch (_variant) {
       _AppButtonVariant.filled => ElevatedButton(
         onPressed: _isDisabled || loading ? null : onPressed,
-        style:
-            style ??
-            ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              backgroundColor: AppPalette.primary,
-              foregroundColor: Colors.white,
-              disabledBackgroundColor: Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(0.6),
-              disabledForegroundColor: Colors.white.withOpacity(0.8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
+        style: style,
         child: child,
       ),
       _AppButtonVariant.outlined => OutlinedButton(
@@ -148,14 +135,11 @@ class AppButton extends StatelessWidget {
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (hasLeading) ...[Icon(leading, size: 20), const SizedBox(width: 4)],
+        if (hasLeading) ...[leading!, const SizedBox(width: 4)],
         Flexible(
           child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
-        if (hasTrailing) ...[
-          const SizedBox(width: 8),
-          Icon(trailing, size: 20),
-        ],
+        if (hasTrailing) ...[const SizedBox(width: 8), trailing!],
       ],
     );
   }

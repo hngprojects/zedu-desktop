@@ -1,5 +1,4 @@
-import 'package:flutter_starter/features/features.dart';
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 final locator = GetIt.instance;
 
@@ -17,14 +16,7 @@ void setupLocator() {
   final dio = Dio(BaseOptions(baseUrl: config.apiBaseUrl));
   dio.interceptors.add(authInterceptor);
 
-  locator
-    ..registerLazySingleton<ApiBaseService>(
-      () => ApiBaseService(config: config, dio: dio),
-    )
-    ..registerLazySingleton<TasksRepo>(
-      () => TasksDatasource(
-        config: config,
-        apiBaseService: locator<ApiBaseService>(),
-      ),
-    );
+  locator.registerLazySingleton<ApiBaseService>(
+    () => ApiBaseService(config: config, dio: dio),
+  );
 }

@@ -1,5 +1,5 @@
 // core/utils/result.dart
-import 'package:flutter_starter/core/core.dart';
+import 'package:zedu/core/core.dart';
 
 sealed class Result<T> {
   const Result();

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_starter/app/theme/app_palette.dart';
+import 'package:zedu/core/core.dart';
+import 'package:zedu/core/theme/app_typography.dart';
 
 class AppTextField extends StatefulWidget {
   final String? label;
@@ -70,7 +69,7 @@ class _AppTextFieldState extends State<AppTextField> {
                     widget.label!,
                     style: textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w500,
-                      color: AppPalette.textPrimary,
+                      color: context.colors.textPrimary,
                       fontSize: 14,
                     ),
                   )
@@ -93,11 +92,12 @@ class _AppTextFieldState extends State<AppTextField> {
             textInputAction: widget.textInputAction,
             onFieldSubmitted: widget.onFieldSubmitted,
             maxLength: widget.maxLength,
+            style: textTheme.bodyLarge?.copyWith(fontFamily: FontFamily.roboto),
             decoration: InputDecoration(
               hintText: widget.hint,
-              hintStyle: textTheme.bodyMedium?.copyWith(
-                color: AppPalette.textHint,
-                fontSize: 16,
+              hintStyle: textTheme.bodyLarge?.copyWith(
+                color: context.colors.textHint,
+                fontFamily: FontFamily.roboto,
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -105,15 +105,15 @@ class _AppTextFieldState extends State<AppTextField> {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: Color(0xffD0D0FD)),
+                borderSide: BorderSide(color: context.colors.borderOutline),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: Color(0xffD0D0FD)),
+                borderSide: BorderSide(color: context.colors.borderOutline),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: AppPalette.primary),
+                borderSide: BorderSide(color: context.colors.primary),
               ),
               prefixIcon: widget.prefix != null
                   ? Row(
@@ -124,7 +124,7 @@ class _AppTextFieldState extends State<AppTextField> {
                             padding: const EdgeInsets.only(left: 12),
                             child: Icon(
                               widget.icon,
-                              color: AppPalette.textHint,
+                              color: context.colors.textHint,
                               size: 20,
                             ),
                           ),
@@ -135,7 +135,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       ],
                     )
                   : widget.icon != null
-                  ? Icon(widget.icon, color: AppPalette.textHint, size: 20)
+                  ? Icon(widget.icon, color: context.colors.textHint, size: 20)
                   : null,
               suffixIcon: widget.isPassword
                   ? IconButton(
