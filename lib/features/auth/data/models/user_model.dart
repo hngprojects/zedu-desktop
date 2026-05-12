@@ -42,7 +42,7 @@ class UserModel {
   final String currentOrg;
   final String currentOrganisationSlug;
   final String defaultAvatarUrl;
-  final DateTime expiresIn;
+  final DateTime? expiresIn;
   final bool isActive;
   final bool online;
   final OrganisationModel organisation;
@@ -70,9 +70,11 @@ class UserModel {
       currentOrg: json['current_org'] as String,
       currentOrganisationSlug: json['current_organisation_slug'] as String,
       defaultAvatarUrl: json['default_avatar_url'] as String,
-      expiresIn: DateTime.fromMillisecondsSinceEpoch(
-        int.parse(json['expires_in'] as String) * 1000,
-      ),
+      expiresIn: json['expires_in'] != null
+    ? DateTime.fromMillisecondsSinceEpoch(
+        int.parse(json['expires_in'].toString()) * 1000,
+      )
+    : null,
       isActive: json['is_active'] as bool,
       online: json['online'] as bool,
       organisation: OrganisationModel.fromJson(
@@ -99,7 +101,7 @@ class UserModel {
     'current_org': currentOrg,
     'current_organisation_slug': currentOrganisationSlug,
     'default_avatar_url': defaultAvatarUrl,
-    'expires_in': expiresIn.toIso8601String(),
+    'expires_in': expiresIn?.toIso8601String(),
     'is_active': isActive,
     'online': online,
     'organisation': organisation,

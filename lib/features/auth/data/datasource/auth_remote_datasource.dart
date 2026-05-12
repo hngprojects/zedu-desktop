@@ -58,25 +58,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<UserModel> me() async {
     try {
       if (_config.usesMockData) {
-        AppLogger.d('Using mock data for GET /auth/me', tag: _tag);
+        AppLogger.d('Using mock data for GET /users/me', tag: _tag);
         final loginResponse = LoginResponseModel.fromJson(
           LoginResponseModel.mockLoginResponse,
         );
         return loginResponse.user;
       }
 
-      AppLogger.d('GET /auth/me', tag: _tag);
+      AppLogger.d('GET /users/me', tag: _tag);
       final response = await _apiBaseService.get<Map<String, dynamic>>(
-        path: '/auth/me',
+        path: '/users/me',
       );
 
       final data = response.data['data'] as Map<String, dynamic>;
-      return UserModel.fromJson(data);
+      return UserModel.fromJson(data['user'] as Map<String, dynamic>);
     } on ApiFailure {
       rethrow;
     } catch (error) {
-      AppLogger.e('Failed to parse /auth/me response', tag: _tag, error: error);
-      throw ApiFailure.fromParsingError(error, path: '/auth/me');
+      AppLogger.e('Failed to parse /users/me response', tag: _tag, error: error);
+      throw ApiFailure.fromParsingError(error, path: '/users/me');
     }
   }
 }
