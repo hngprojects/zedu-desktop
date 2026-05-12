@@ -48,3 +48,5 @@ temp_auto_push.bat
 temp_interactive_push.bat
 .gitignore
 public/fonts/fa-solid-400.woff2
+*.woff2
+*.woff2
