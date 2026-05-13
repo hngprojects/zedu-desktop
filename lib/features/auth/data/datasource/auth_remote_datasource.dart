@@ -75,7 +75,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on ApiFailure {
       rethrow;
     } catch (error) {
-      AppLogger.e('Failed to parse /users/me response', tag: _tag, error: error);
+      AppLogger.e(
+        'Failed to parse /users/me response',
+        tag: _tag,
+        error: error,
+      );
       throw ApiFailure.fromParsingError(error, path: '/users/me');
     }
   }

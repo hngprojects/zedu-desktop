@@ -71,10 +71,10 @@ class UserModel {
       currentOrganisationSlug: json['current_organisation_slug'] as String,
       defaultAvatarUrl: json['default_avatar_url'] as String,
       expiresIn: json['expires_in'] != null
-    ? DateTime.fromMillisecondsSinceEpoch(
-        int.parse(json['expires_in'].toString()) * 1000,
-      )
-    : null,
+          ? DateTime.fromMillisecondsSinceEpoch(
+              int.parse(json['expires_in'].toString()) * 1000,
+            )
+          : null,
       isActive: json['is_active'] as bool,
       online: json['online'] as bool,
       organisation: OrganisationModel.fromJson(

@@ -9,7 +9,7 @@ class AppRouter {
 
   static final router = GoRouter(
     initialLocation: login,
-    
+
     routes: [
       GoRoute(path: login, builder: (context, state) => const LoginView()),
     ],

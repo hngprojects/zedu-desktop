@@ -46,7 +46,10 @@ void main() {
             password: any(named: 'password'),
           ),
         ).thenThrow(
-          const ApiFailure(message: 'Invalid credentials', kind: ApiFailureKind.client),
+          const ApiFailure(
+            message: 'Invalid credentials',
+            kind: ApiFailureKind.client,
+          ),
         );
 
         final result = await repository.login(
@@ -76,8 +79,9 @@ void main() {
 
     group('getCurrentUser', () {
       test('returns Success<User> when datasource succeeds', () async {
-        final mockUser =
-            LoginResponseModel.fromJson(LoginResponseModel.mockLoginResponse).user;
+        final mockUser = LoginResponseModel.fromJson(
+          LoginResponseModel.mockLoginResponse,
+        ).user;
 
         when(() => mockDatasource.me()).thenAnswer((_) async => mockUser);
 
@@ -90,7 +94,10 @@ void main() {
 
       test('returns Failure when datasource throws ApiFailure', () async {
         when(() => mockDatasource.me()).thenThrow(
-          const ApiFailure(message: 'Unauthorized', kind: ApiFailureKind.unauthorized),
+          const ApiFailure(
+            message: 'Unauthorized',
+            kind: ApiFailureKind.unauthorized,
+          ),
         );
 
         final result = await repository.getCurrentUser();
