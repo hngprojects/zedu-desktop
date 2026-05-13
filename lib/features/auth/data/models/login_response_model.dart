@@ -25,8 +25,7 @@ class LoginResponseModel {
   }
 
   static const Map<String, dynamic> _mockLoginResponse = {
-    "access_token":
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjAxOWUxMDFiLTYzZmItN2Y5Zi04MTBlLWE1NjAzMjllYTRhNCIsImF1dGhvcmlzZWQiOnRydWUsImV4cCI6MTc3ODk5MTQ5MSwib3JnX2lkIjoiMDE5ZTBmNTYtNmJhYi03ZjlmLWE3ZmMtZDExOWU1ZGI1ODhiIiwicm9sZV9pZCI6bnVsbCwidXNlcl9pZCI6IjAxOWUwZjU2LTZiMDYtN2Y5ZS1hZDlkLTgyMDExYmNiNWUxYiJ9.OoNXSt9Xts5S4bZjYUJRC5-haCZBydq5Ws99YkbDTJ0",
+    "access_token":"",
     "access_token_expires_in": "1778991491",
     "notification_token": "IAK0C6kd9KBCyuky8RbN0Fh2pONDgzjK",
     "user": {
