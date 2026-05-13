@@ -11,7 +11,6 @@ class AppRouter {
     initialLocation: login,
     
     routes: [
-      GoRoute(path: home, builder: (context, state) => const MockHomeScreen()),
       GoRoute(path: login, builder: (context, state) => const LoginView()),
     ],
   );
