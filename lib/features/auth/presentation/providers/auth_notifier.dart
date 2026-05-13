@@ -111,6 +111,35 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  Future<bool> resetPassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    AppLogger.d('Reset password attempt — $email', tag: _tag);
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final result = await _repository.resetPassword(
+      email: email,
+      token: token,
+      newPassword: newPassword,
+    );
+    
+    switch (result) {
+      case Success<void>():
+        AppLogger.i('Reset password succeeded', tag: _tag);
+        state = state.copyWith(isLoading: false);
+        return true;
+      case Failure<void>():
+        AppLogger.w('Reset password rejected — ${result.error.message}', tag: _tag);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.friendlyMessage,
+        );
+        return false;
+    }
+  }
+
   Future<void> logout() async {
     if (_logoutInFlight) {
       AppLogger.d('Logout ignored — already in progress', tag: _tag);

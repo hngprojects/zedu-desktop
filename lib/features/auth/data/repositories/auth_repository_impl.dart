@@ -1,4 +1,3 @@
-// data/repositories/auth_repository_impl.dart
 import 'dart:async';
 import 'package:zedu/core/core.dart';
 import 'package:zedu/features/features.dart';
@@ -76,6 +75,25 @@ class AuthRepositoryImpl implements AuthRepository {
       return Failure(failure);
     } catch (error) {
       AppLogger.e('Unexpected forgot password error', tag: _tag, error: error);
+      return Failure(ApiFailure.unknown(error));
+    }
+  }
+
+  @override
+  Future<Result<void>> resetPassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    try {
+      await _remote.resetPassword(email: email, token: token, newPassword: newPassword);
+      AppLogger.i('Reset password successful for — $email', tag: _tag);
+      return const Success(null);
+    } on ApiFailure catch (failure) {
+      AppLogger.w('Reset password failed — ${failure.message}', tag: _tag);
+      return Failure(failure);
+    } catch (error) {
+      AppLogger.e('Unexpected reset password error', tag: _tag, error: error);
       return Failure(ApiFailure.unknown(error));
     }
   }

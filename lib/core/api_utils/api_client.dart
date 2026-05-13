@@ -111,6 +111,7 @@ class ApiBaseService {
       final responseData = response.data;
       if (responseData is Map<String, dynamic> &&
           responseData['status'] == 'error') {
+        AppLogger.w('API Error Response: $responseData', tag: 'ApiBaseService');
         throw ApiFailure(
           message: responseData['message'] as String? ?? 'Request failed.',
           statusCode: responseData['status_code'] as int?,
@@ -125,6 +126,9 @@ class ApiBaseService {
         message: response.statusMessage,
       );
     } on DioException catch (error) {
+      if (error.response?.data != null) {
+        AppLogger.w('Dio Error Response: ${error.response?.data}', tag: 'ApiBaseService');
+      }
       throw ApiFailure.fromDioException(error);
     }
   }

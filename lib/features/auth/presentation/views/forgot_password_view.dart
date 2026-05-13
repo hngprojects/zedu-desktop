@@ -34,7 +34,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
         type: AppToastType.success,
         message: 'Password reset instructions sent!',
       );
-      // Optional: Navigate to a success screen or back to login
+      context.go(AppRouter.resetPassword, extra: _emailController.text.trim());
     }
   }
 

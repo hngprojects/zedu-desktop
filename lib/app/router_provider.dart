@@ -21,7 +21,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final onAuthScreen = loc == AppRouter.login || 
                            loc == AppRouter.signUp || 
-                           loc == AppRouter.forgotPassword;
+                           loc == AppRouter.forgotPassword ||
+                           loc == AppRouter.resetPassword;
 
       if (auth.status == AuthStatus.authenticated) {
         if (onAuthScreen) {
@@ -39,6 +40,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: AppRouter.login, builder: (context, state) => const LoginView()),
       GoRoute(path: AppRouter.signUp, builder: (context, state) => const SignUpView()),
       GoRoute(path: AppRouter.forgotPassword, builder: (context, state) => const ForgotPasswordView()),
+      GoRoute(
+        path: AppRouter.resetPassword,
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ResetPasswordView(email: email);
+        },
+      ),
       GoRoute(path: AppRouter.home, builder: (context, state) => const HomeView()),
     ],
   );
