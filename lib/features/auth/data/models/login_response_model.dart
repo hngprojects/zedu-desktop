@@ -25,7 +25,7 @@ class LoginResponseModel {
   }
 
   static const Map<String, dynamic> _mockLoginResponse = {
-    "access_token":"",
+    "access_token": "",
     "access_token_expires_in": "1778991491",
     "notification_token": "IAK0C6kd9KBCyuky8RbN0Fh2pONDgzjK",
     "user": {
