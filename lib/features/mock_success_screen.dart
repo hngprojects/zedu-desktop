@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:zedu/core/core.dart';
 
 class MockHomeScreen extends StatelessWidget {

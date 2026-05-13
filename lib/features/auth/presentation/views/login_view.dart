@@ -1,6 +1,4 @@
 import 'package:zedu/core/core.dart';
-import 'package:zedu/core/theme/app_typography.dart';
-import 'package:zedu/core/utils/validators.dart';
 import 'package:zedu/features/features.dart';
 
 class LoginView extends ConsumerStatefulWidget {
