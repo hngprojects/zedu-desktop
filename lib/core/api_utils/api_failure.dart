@@ -36,12 +36,15 @@ class ApiFailure implements Exception {
   final ApiFailureKind kind;
 
   String get friendlyMessage => switch (kind) {
-    ApiFailureKind.network => 'No internet connection. Check your network and try again.',
+    ApiFailureKind.network =>
+      'No internet connection. Check your network and try again.',
     ApiFailureKind.timeout => 'The request timed out. Please try again.',
-    ApiFailureKind.unauthorized => 'Your session has expired. Please log in again.',
+    ApiFailureKind.unauthorized =>
+      'Your session has expired. Please log in again.',
     ApiFailureKind.forbidden => 'You don\'t have permission to do that.',
     ApiFailureKind.notFound => 'The resource was not found.',
-    ApiFailureKind.server => 'Something went wrong on our end. Please try again later.',
+    ApiFailureKind.server =>
+      'Something went wrong on our end. Please try again later.',
     ApiFailureKind.parsing => 'Something went wrong. Please try again.',
     ApiFailureKind.unknown => 'Something went wrong. Please try again.',
     // 4xx client errors carry a structured server message safe to show (e.g. "Invalid credentials")

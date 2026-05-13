@@ -60,7 +60,10 @@ void main() {
           apiBaseService: mockApi,
         );
 
-        await datasource.login(email: 'user@example.com', password: 'Secret123');
+        await datasource.login(
+          email: 'user@example.com',
+          password: 'Secret123',
+        );
 
         verify(
           () => mockApi.post<Map<String, dynamic>>(
@@ -115,7 +118,8 @@ void main() {
 
       test('calls GET /auth/me and returns user', () async {
         final rawUserData =
-            LoginResponseModel.mockLoginResponse['user'] as Map<String, dynamic>;
+            LoginResponseModel.mockLoginResponse['user']
+                as Map<String, dynamic>;
 
         when(
           () => mockApi.get<Map<String, dynamic>>(path: '/auth/me'),
@@ -137,7 +141,9 @@ void main() {
         final user = await datasource.me();
 
         expect(user.email, rawUserData['email'] as String);
-        verify(() => mockApi.get<Map<String, dynamic>>(path: '/auth/me')).called(1);
+        verify(
+          () => mockApi.get<Map<String, dynamic>>(path: '/auth/me'),
+        ).called(1);
       });
     });
   });

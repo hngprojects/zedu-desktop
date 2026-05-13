@@ -58,7 +58,10 @@ class AuthNotifier extends Notifier<AuthState> {
         );
       case Failure<AuthSession>():
         AppLogger.w('Login rejected — ${result.error.message}', tag: _tag);
-        state = state.copyWith(isLoading: false, error: result.error.friendlyMessage);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.friendlyMessage,
+        );
     }
   }
 

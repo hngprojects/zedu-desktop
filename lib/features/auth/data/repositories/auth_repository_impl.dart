@@ -42,10 +42,17 @@ class AuthRepositoryImpl implements AuthRepository {
       AppLogger.i('Current user fetched — ${user.email}', tag: _tag);
       return Success(user.toEntity());
     } on ApiFailure catch (failure) {
-      AppLogger.w('Failed to fetch current user — ${failure.message}', tag: _tag);
+      AppLogger.w(
+        'Failed to fetch current user — ${failure.message}',
+        tag: _tag,
+      );
       return Failure(failure);
     } catch (error) {
-      AppLogger.e('Unexpected error fetching current user', tag: _tag, error: error);
+      AppLogger.e(
+        'Unexpected error fetching current user',
+        tag: _tag,
+        error: error,
+      );
       return Failure(ApiFailure.unknown(error));
     }
   }

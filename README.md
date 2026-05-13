@@ -1,86 +1,46 @@
 # Zedu Desktop
 
-A Flutter starter template for building apps with clean arch.
+A lean Flutter app using Clean Architecture, Material 3, and Riverpod. The codebase is organized for desktop and mobile targets, with an **auth** feature (login, session, and API wiring) as the reference vertical slice.
 
 ## Stack
 
-- Flutter 3.x
-- Material 3
-- Riverpod
-- GetIt
-- Dio
-- GoRouter
-- flutter_dotenv
-- Mocktail
-- Flutter lints
+- Flutter 3.x / Dart `^3.11`
+- Material 3, Roboto and Lato fonts (see `pubspec.yaml`)
+- Riverpod, GetIt, GoRouter
+- Dio, `flutter_dotenv`
+- `flutter_secure_storage`, `flutter_svg`
+- Mocktail (tests), `flutter_lints` plus strict analyzer language flags in `analysis_options.yaml`
 
-## Project Layout
+## Project layout
 
 ```txt
 .
-├── .env
-├── .env.example
+├── .env.example          # Tracked template; bundled as a Flutter asset
 ├── lib/
 │   ├── main.dart
 │   ├── app/
-│   │   ├── app.dart
-│   │   └── theme/
-│   │       ├── app_palette.dart
-│   │       └── app_theme.dart
+│   │   └── app.dart
 │   ├── core/
 │   │   ├── core.dart
-│   │   ├── api_utils/
-│   │   │   ├── api_utils.dart
-│   │   │   ├── api_client.dart
-│   │   │   ├── api_failure.dart
-│   │   │   └── api_response_model.dart
-│   │   ├── config/
-│   │   │   ├── config.dart
-│   │   │   ├── app_config.dart
-│   │   │   └── env_loader.dart
+│   │   ├── api_utils/        # ApiBaseService, failures, auth interceptor
+│   │   ├── config/           # AppConfig, env loader, flavor
 │   │   ├── locator/
-│   │   │   ├── locator.dart
-│   │   │   └── locator_service.dart
-│   │   └── navigator/
-│   │       ├── navigator.dart
-│   │       └── app_router.dart
-│   ├── features/
-│   │   ├── features.dart
-│   │   └── example_tasks/
-│   │       ├── example_tasks.dart
-│   │       ├── data/
-│   │       │   ├── data.dart
-│   │       │   └── tasks_datasource.dart
-│   │       ├── domain/
-│   │       │   ├── domain.dart
-│   │       │   ├── models/
-│   │       │   │   ├── models.dart
-│   │       │   │   └── task_model.dart
-│   │       │   └── repo/
-│   │       │       ├── repo.dart
-│   │       │       └── tasks_repo.dart
-│   │       └── presentation/
-│   │           ├── presentation.dart
-│   │           ├── components/
-│   │           │   ├── components.dart
-│   │           │   └── tasks_header.dart
-│   │           ├── providers/
-│   │           │   ├── providers.dart
-│   │           │   └── tasks_provider.dart
-│   │           ├── views/
-│   │           │   ├── views.dart
-│   │           │   └── tasks_view.dart
-│   │           └── widgets/
-│   │               ├── widgets.dart
-│   │               └── task_tile.dart
+│   │   ├── navigator/        # GoRouter (e.g. login route)
+│   │   ├── secure_storage/
+│   │   ├── theme/
+│   │   ├── utils/
+│   │   └── widgets/
+│   └── features/
+│       ├── features.dart
+│       └── auth/
+│           ├── auth.dart
+│           ├── data/
+│           ├── domain/
+│           └── presentation/
 ├── test/
-│   ├── app_test.dart
 │   ├── helpers/
-│   │   └── test_material_app.dart
-│   ├── unit/
-│   │   └── features/
-│   └── widget/
-│       └── features/
+│   ├── unit/features/auth/data/
+│   └── widget/features/auth/presentation/views/
 ├── analysis_options.yaml
 ├── pubspec.yaml
 └── README.md
@@ -94,59 +54,38 @@ Each feature owns its UI, business rules, repository contract, and data implemen
 presentation -> domain <- data
 ```
 
-- `app`: app setup and theme.
-- `core`: shared infrastructure.
-- `features`: vertical feature modules.
-- `domain`: models and repo contracts.
-- `data`: datasources and API access.
-- `presentation`: views, components, widgets, providers, and UI state.
+- `app`: bootstrap and root `MaterialApp.router`.
+- `core`: shared infrastructure (DI, HTTP, env, routing, theme, secure storage).
+- `features`: vertical modules; today this is **`auth`** (login flow and session models).
 
-The `example_tasks` feature shows the full flow:
+Example flow:
 
 ```txt
-TasksView
-  -> tasksProvider
-  -> TasksRepo
-  -> TasksDatasource
+LoginView
+  -> auth providers (Riverpod)
+  -> AuthRepository
+  -> AuthRemoteDataSource
   -> ApiBaseService
 ```
 
-## Core Rules
+## Core rules
 
 Keep `core` small. Add shared code only when more than one feature needs it.
 
-Good `core` candidates:
+Good `core` candidates: app config, dependency injection, API client and failures, navigation, secure storage, logging, theme, and cross-cutting utilities.
 
-- App config
-- Dependency injection
-- API base service
-- API failure handling
-- Navigation
-- Storage, connectivity, logging, providers, enums, or app services when used
-
-## Adding A Feature
-
-1. Create `features/<feature_name>`.
-2. Put datasources and API access in `data`.
-3. Put models and repo contracts in `domain`.
-4. Put screens, components, widgets, providers, and UI state in `presentation`.
-5. Keep feature models in `domain/models`.
-6. Register long-lived implementations in `core/locator/locator_service.dart`.
-
-Avoid global `utils`, `constants`, or `services` folders for one-off code. Keep code inside the feature until it is truly shared.
-
-## Barrel Exports
+## Barrel exports
 
 Every folder that exposes reusable Dart files should have a barrel file.
 
-Use **exactly these two root-barrel imports** everywhere you need shared core plus feature exports (same order and URIs as `lib/features/example_tasks/data/tasks_datasource.dart`):
+Use **exactly these two root-barrel imports** when you need shared core plus feature exports (same order and URIs as `lib/features/auth/data/datasource/auth_remote_datasource.dart`):
 
 ```dart
 import 'package:zedu/core/core.dart';
 import 'package:zedu/features/features.dart';
 ```
 
-If you rename the app in `pubspec.yaml`, update the `package:` name in both lines to match. Narrower barrels are only for real import cycles or boundary clarity—this pair stays the default.
+If you rename the app in `pubspec.yaml`, update the `package:` name in both lines to match.
 
 Export chain:
 
@@ -160,59 +99,60 @@ Rules:
 - Add new exports whenever you add a reusable file.
 - Prefer `core/core.dart` for shared app infrastructure.
 - Prefer `features/features.dart` when code needs feature-level exports.
-- Inside a feature, use the narrowest useful barrel when `features.dart` (or the feature barrel) would create an import cycle or blur boundaries—often a **layer** barrel (`data/data.dart`, `domain/domain.dart`, `presentation/presentation.dart`) or a **subfolder** barrel (`domain/repo/repo.dart`, `presentation/views/views.dart`, etc.).
-- Avoid importing leaf `.dart` files directly unless every barrel option causes a real problem.
+- Inside a feature, use the narrowest useful barrel when `features.dart` would create an import cycle—often a **layer** barrel (`data/data.dart`, `domain/domain.dart`, `presentation/presentation.dart`) or a **subfolder** barrel.
 
-**Narrower than `features.dart`:** import that feature’s barrel file first, e.g. `lib/features/example_tasks/example_tasks.dart` (same pattern for any feature: `lib/features/<name>/<name>.dart`). That file already re-exports `data`, `domain`, and `presentation`. Reach for layer or subfolder barrels only when you need a smaller slice to break a cycle or keep dependencies obvious.
+**Narrower than `features.dart`:** import that feature’s barrel first, e.g. `lib/features/auth/auth.dart`. Reach for layer or subfolder barrels only when you need a smaller slice to break a cycle or keep dependencies obvious.
 
 ## Configuration
 
-Env files live at the **project root** (`.env`, `.env.example`) and are listed under `flutter.assets` so [`flutter_dotenv`](https://pub.dev/packages/flutter_dotenv) can load them before dependency injection runs.
+Env keys are read from **dotenv** after `loadAppEnv()` in `main.dart`. The repo bundles **`.env.example`** as a Flutter asset so `flutter analyze` and first runs work on a clean clone without a local `.env`.
 
-The repo ships a **safe default** `.env` so `flutter analyze` and first runs work without extra setup. Treat `.env.example` as a template you can copy if you ever delete `.env`.
+`loadAppEnv()` tries `.env` first, then `.env.example`. Only `.env.example` is listed under `flutter.assets` by default (avoids missing-asset warnings when `.env` is gitignored). If you want to package a root `.env` for a build, add `- .env` under `flutter.assets` and ensure that file exists on the machine that runs `flutter build`.
 
-1. Edit `.env` for your machine.
-2. Do not commit real secrets; prefer CI variables or `--dart-define` for production values.
-
-```txt
-API_BASE_URL=https://api.example.com
-USE_MOCK_DATA=false
-```
-
-`USE_MOCK_DATA` accepts `true` / `false` (also `1` / `0`, `yes` / `no`).
-
-### Overrides for CI or release builds
-
-`--dart-define` still works and **wins over `.env`** when you need non-file config:
-
-```sh
-flutter run --dart-define=API_BASE_URL=https://api.example.com --dart-define=USE_MOCK_DATA=false
-```
-
-Defaults when neither `.env` nor defines set a value:
+1. Copy `.env.example` to `.env` for local overrides, or edit values in `.env.example` for experiments (avoid committing secrets).
+2. Prefer CI variables or `--dart-define` for production secrets.
 
 ```txt
 API_BASE_URL=https://example.com/api
-USE_MOCK_DATA=true
+USE_MOCK_DATA=false
+APP_FLAVOR=development
+```
+
+`USE_MOCK_DATA` accepts `true` / `false` (also `1` / `0`, `yes` / `no`). `APP_FLAVOR` accepts `development`, `staging`, or `production` (case-insensitive).
+
+### Overrides for CI or release builds
+
+`--dart-define` overrides dotenv when you need non-file config:
+
+```sh
+flutter run --dart-define=API_BASE_URL=https://api.example.com --dart-define=USE_MOCK_DATA=false --dart-define=APP_FLAVOR=production
+```
+
+Defaults when neither `.env` / `.env.example` nor defines set a value (see `AppConfig.fromEnvironment` and `AppFlavorConfig`):
+
+```txt
+API_BASE_URL=https://example.com/api
+USE_MOCK_DATA=false
+APP_FLAVOR=development
 ```
 
 ## Clone
 
-The GitHub repo root **is** this Flutter project: `pubspec.yaml` and `lib/` sit at the top level. After cloning, `cd` into the repo folder only—there is no extra nested `zedu/` directory inside the clone.
+The repository root **is** the Flutter project (`pubspec.yaml` and `lib/` at the top level).
 
 ```sh
-git clone https://github.com/hngprojects/flutter-starter.git
-cd flutter-starter
+git clone https://github.com/hngprojects/zedu-desktop.git
+cd zedu-desktop
 ```
 
-## Quick Start
+## Quick start
 
 ```sh
 flutter pub get
 flutter run
 ```
 
-Optional: reset env from the template.
+Optional: create a local `.env` from the template.
 
 ```sh
 cp .env.example .env
@@ -224,20 +164,22 @@ Windows (PowerShell):
 Copy-Item .env.example .env
 ```
 
-## Common Commands
+## Common commands
 
 ```sh
 dart format lib test
-dart analyze
+flutter analyze
 flutter test
 ```
 
+Use `flutter analyze` for this project so the Flutter SDK and bundled assets resolve correctly.
+
 ## Testing
 
-Tests should mirror the app structure:
+Tests mirror the app layout:
 
-- `test/helpers`: reusable test setup
-- `test/unit`: datasources, repo contracts, and services
-- `test/widget`: views and reusable widgets
+- `test/helpers`: reusable test setup (e.g. `TestMaterialApp`)
+- `test/unit`: datasources, repositories, and services
+- `test/widget`: views and important UI flows
 
 Mock dependencies at the layer boundary being tested.
