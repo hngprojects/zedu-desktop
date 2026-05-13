@@ -7,7 +7,18 @@ abstract interface class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+  Future<LoginResponseModel> signUp({
+    required String email,
+    required String password,
+  });
+  Future<void> forgotPassword({required String email});
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  });
   Future<UserModel> me();
+  Future<void> logout();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -56,6 +67,99 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<LoginResponseModel> signUp({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      if (_config.usesMockData) {
+        AppLogger.d('Using mock data for POST /auth/register', tag: _tag);
+        return LoginResponseModel.fromJson(
+          LoginResponseModel.mockLoginResponse,
+        );
+      }
+
+      AppLogger.d('POST /auth/register — $email', tag: _tag);
+      final response = await _apiBaseService.post<Map<String, dynamic>>(
+        path: '/auth/register',
+        data: {'email': email, 'password': password},
+      );
+
+      final payload = response.data['data'] as Map<String, dynamic>;
+      return LoginResponseModel.fromJson(payload);
+    } on ApiFailure {
+      rethrow;
+    } catch (error) {
+      AppLogger.e(
+        'Failed to parse /auth/register response',
+        tag: _tag,
+        error: error,
+      );
+      throw ApiFailure.fromParsingError(error, path: '/auth/register');
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    try {
+      if (_config.usesMockData) {
+        AppLogger.d('Using mock data for POST /auth/password-reset', tag: _tag);
+        return;
+      }
+
+      AppLogger.d('POST /auth/password-reset — $email', tag: _tag);
+      await _apiBaseService.post<Map<String, dynamic>?>(
+        path: '/auth/password-reset',
+        data: {'email': email},
+      );
+    } on ApiFailure {
+      rethrow;
+    } catch (error) {
+      AppLogger.e(
+        'Failed to complete POST /auth/password-reset',
+        tag: _tag,
+        error: error,
+      );
+      throw ApiFailure.fromParsingError(error, path: '/auth/password-reset');
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    try {
+      if (_config.usesMockData) {
+        AppLogger.d('Using mock data for POST /auth/password-reset/verify', tag: _tag);
+        return;
+      }
+
+      final payload = {
+        'email': email,
+        'token': token,
+        'new_password': newPassword,
+        'new_password_confirmation': newPassword,
+      };
+      AppLogger.d('POST /auth/password-reset/verify — payload: $payload', tag: _tag);
+      await _apiBaseService.post<Map<String, dynamic>?>(
+        path: '/auth/password-reset/verify',
+        data: payload,
+      );
+    } on ApiFailure {
+      rethrow;
+    } catch (error) {
+      AppLogger.e(
+        'Failed to complete POST /auth/password-reset/verify',
+        tag: _tag,
+        error: error,
+      );
+      throw ApiFailure.fromParsingError(error, path: '/auth/password-reset/verify');
+    }
+  }
+
+  @override
   Future<UserModel> me() async {
     try {
       if (_config.usesMockData) {
@@ -78,6 +182,31 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } catch (error) {
       AppLogger.e('Failed to parse /auth/me response', tag: _tag, error: error);
       throw ApiFailure.fromParsingError(error, path: '/auth/me');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      if (_config.usesMockData) {
+        AppLogger.d('Using mock data for POST /auth/logout', tag: _tag);
+        return;
+      }
+
+      AppLogger.d('POST /auth/logout', tag: _tag);
+      await _apiBaseService.post<Map<String, dynamic>?>(
+        path: '/auth/logout',
+        data: const <String, dynamic>{},
+      );
+    } on ApiFailure {
+      rethrow;
+    } catch (error) {
+      AppLogger.e(
+        'Failed to complete POST /auth/logout',
+        tag: _tag,
+        error: error,
+      );
+      throw ApiFailure.fromParsingError(error, path: '/auth/logout');
     }
   }
 }

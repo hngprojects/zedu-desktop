@@ -84,6 +84,10 @@ abstract final class AppLogger {
   }) {
     if (kReleaseMode && level.value < LogLevel.warning.value) return;
 
+    if (kDebugMode) {
+      print('${tag ?? 'AppLogger'}: $message');
+    }
+
     dev.log(
       kDebugMode ? '${_prefix(level)}$message\x1B[0m' : message,
       name: tag ?? 'AppLogger',

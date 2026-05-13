@@ -5,12 +5,16 @@ class AuthNotifier extends Notifier<AuthState> {
   late final AuthRepository _repository;
   late final SecureStorageService _storage;
   late final AuthInterceptor _interceptor;
+  late final LogoutUseCase _logoutUseCase;
+
+  bool _logoutInFlight = false;
 
   static const _tag = 'AuthNotifier';
 
   @override
   AuthState build() {
     _repository = ref.read(authRepositoryProvider);
+    _logoutUseCase = ref.read(logoutUseCaseProvider);
     _storage = locator<SecureStorageService>();
     _interceptor = locator<AuthInterceptor>();
 
@@ -65,10 +69,98 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  Future<void> signUp({required String email, required String password}) async {
+    AppLogger.d('Sign up attempt — $email', tag: _tag);
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final result = await _repository.signUp(email: email, password: password);
+    switch (result) {
+      case Success<AuthSession>():
+        AppLogger.i('Sign up succeeded — token persisted', tag: _tag);
+        await _storage.saveAccessToken(result.value.accessToken);
+        state = AuthState(
+          status: AuthStatus.authenticated,
+          user: result.value.user,
+        );
+      case Failure<AuthSession>():
+        AppLogger.w('Sign up rejected — ${result.error.message}', tag: _tag);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.friendlyMessage,
+        );
+    }
+  }
+
+  Future<bool> forgotPassword({required String email}) async {
+    AppLogger.d('Forgot password attempt — $email', tag: _tag);
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final result = await _repository.forgotPassword(email: email);
+    switch (result) {
+      case Success<void>():
+        AppLogger.i('Forgot password succeeded', tag: _tag);
+        state = state.copyWith(isLoading: false);
+        return true;
+      case Failure<void>():
+        AppLogger.w('Forgot password rejected — ${result.error.message}', tag: _tag);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.friendlyMessage,
+        );
+        return false;
+    }
+  }
+
+  Future<bool> resetPassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    AppLogger.d('Reset password attempt — $email', tag: _tag);
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final result = await _repository.resetPassword(
+      email: email,
+      token: token,
+      newPassword: newPassword,
+    );
+    
+    switch (result) {
+      case Success<void>():
+        AppLogger.i('Reset password succeeded', tag: _tag);
+        state = state.copyWith(isLoading: false);
+        return true;
+      case Failure<void>():
+        AppLogger.w('Reset password rejected — ${result.error.message}', tag: _tag);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.friendlyMessage,
+        );
+        return false;
+    }
+  }
+
   Future<void> logout() async {
-    AppLogger.i('Logout — clearing session', tag: _tag);
-    await _storage.clearAll();
-    state = const AuthState(status: AuthStatus.unauthenticated);
+    if (_logoutInFlight) {
+      AppLogger.d('Logout ignored — already in progress', tag: _tag);
+      return;
+    }
+    _logoutInFlight = true;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _logoutUseCase();
+    } catch (error, stackTrace) {
+      AppLogger.e(
+        'Logout pipeline error — forcing unauthenticated state',
+        tag: _tag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } finally {
+      _logoutInFlight = false;
+      state = const AuthState(status: AuthStatus.unauthenticated, isLoading: false);
+      AppRouter.goLogin();
+    }
   }
 
   Future<String?> get accessToken => _storage.getAccessToken();
