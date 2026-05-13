@@ -1,5 +1,4 @@
 import 'package:zedu/core/core.dart';
-import 'app_typography.dart';
 
 abstract final class AppTheme {
   static const _buttonRadius = 6.0;
