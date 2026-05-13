@@ -4,29 +4,23 @@ import 'package:zedu/features/features.dart';
 class WorkspaceView extends StatelessWidget {
   const WorkspaceView({super.key});
 
-  static const double _sidebarWidth = 360;
-  static const double _rightPanelWidth = 320;
-  static const double _panelGap = 7;
+  static const double _sidebarWidth = 401;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppPalette.light.background,
-      body: SafeArea(
-        child: Row(
-          children: const [
-            SizedBox(
-              width: _sidebarWidth,
-              child: WorkspaceSidebar(),
-            ),
-            SizedBox(width: _panelGap),
+      body: const SafeArea(
+        child: Column(
+          children: [
+            WorkspaceTopBar(),
             Expanded(
-              child: CenterPanel(),
-            ),
-            SizedBox(width: _panelGap),
-            SizedBox(
-              width: _rightPanelWidth,
-              child: RightContextPanel(),
+              child: Row(
+                children: [
+                  SizedBox(width: _sidebarWidth, child: WorkspaceSidebar()),
+                  Expanded(child: CenterPanel()),
+                ],
+              ),
             ),
           ],
         ),

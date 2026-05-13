@@ -61,7 +61,7 @@ class _SectionHeader extends StatelessWidget {
       onTap: onToggle,
       mouseCursor: SystemMouseCursors.click,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 6),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
         child: Row(
           children: [
             Icon(
@@ -113,9 +113,10 @@ class _WorkspaceSidebarItem extends StatelessWidget {
     final isChannel = item.type == WorkspaceItemType.channel;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      constraints: const BoxConstraints(minHeight: 32),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.white.withValues(alpha: 0.18) : null,
+        color: isSelected ? Colors.white.withValues(alpha: 0.16) : null,
         borderRadius: BorderRadius.circular(6),
       ),
       child: ListTile(

@@ -21,11 +21,9 @@ class WorkspaceNotifier extends Notifier<WorkspaceState> {
   }
 
   void selectItem(String itemId) {
-    final itemExists = state.categories.any(
-      (WorkspaceCategory category) {
-        return category.items.any((WorkspaceItem item) => item.id == itemId);
-      },
-    );
+    final itemExists = state.categories.any((WorkspaceCategory category) {
+      return category.items.any((WorkspaceItem item) => item.id == itemId);
+    });
 
     if (!itemExists) {
       _redirectToDefaultItem();
@@ -40,10 +38,7 @@ class WorkspaceNotifier extends Notifier<WorkspaceState> {
   }
 
   void retrySelectedItem() {
-    state = state.copyWith(
-      isLoading: false,
-      clearError: true,
-    );
+    state = state.copyWith(isLoading: false, clearError: true);
   }
 
   void _redirectToDefaultItem() {

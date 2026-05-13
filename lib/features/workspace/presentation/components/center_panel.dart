@@ -54,7 +54,7 @@ class _CenterPanelHeader extends StatelessWidget {
         : '';
 
     return Container(
-      height: 64,
+      height: 73,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: palette.background,
@@ -101,8 +101,15 @@ class _ConversationEmptyState extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      color: Colors.white,
-      child: Center(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFF0E8FF), Colors.white],
+          begin: Alignment.topCenter,
+          end: Alignment.center,
+        ),
+      ),
+      child: Align(
+        alignment: const Alignment(0, -0.45),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
           child: Column(
@@ -159,24 +166,27 @@ class _MessageComposer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
       color: Colors.white,
-      child: TextField(
-        minLines: 1,
-        maxLines: 4,
-        decoration: InputDecoration(
-          hintText: 'Message $titlePrefix${selectedItem.name}',
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: palette.borderOutline),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: palette.borderOutline),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+        child: TextField(
+          minLines: 1,
+          maxLines: 4,
+          decoration: InputDecoration(
+            hintText: 'Message $titlePrefix${selectedItem.name}',
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: palette.borderOutline),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: palette.borderOutline),
+            ),
           ),
         ),
       ),
