@@ -171,11 +171,11 @@ class _MessageComposer extends StatelessWidget {
             vertical: 14,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: palette.borderOutline),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: palette.borderOutline),
           ),
         ),

@@ -59,8 +59,9 @@ class _SectionHeader extends StatelessWidget {
 
     return InkWell(
       onTap: onToggle,
+      mouseCursor: SystemMouseCursors.click,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 10, 18, 6),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 6),
         child: Row(
           children: [
             Icon(
@@ -118,6 +119,7 @@ class _WorkspaceSidebarItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: ListTile(
+        mouseCursor: SystemMouseCursors.click,
         dense: true,
         minLeadingWidth: 20,
         leading: isChannel
