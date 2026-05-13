@@ -1,6 +1,4 @@
 import 'package:zedu/core/core.dart';
-import 'package:zedu/core/theme/app_typography.dart';
-import 'package:zedu/core/utils/validators.dart';
 import 'package:zedu/features/features.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -26,7 +24,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Future<void> _onLoginPressed() async {
     if (!_formKey.currentState!.validate()) return;
 
-    ref
+    await ref
         .read(authNotifierProvider.notifier)
         .login(
           email: _emailController.text.trim(),
@@ -80,7 +78,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 Image.asset('assets/pngs/zedu_logo.png', width: 83, height: 31),
                 Text.rich(
                   TextSpan(
-                    text: 'Already have an account? ',
+                    text: "Don't have an account? ",
                     style: context.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w400,
                       color: context.colors.textPrimary,
