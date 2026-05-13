@@ -91,8 +91,8 @@ void main() {
           apiBaseService: mockApi,
         );
 
-        expect(
-          () => datasource.login(email: 'test@example.com', password: 'pass'),
+        await expectLater(
+          datasource.login(email: 'test@example.com', password: 'pass'),
           throwsA(isA<ApiFailure>()),
         );
       });
@@ -144,6 +144,82 @@ void main() {
         verify(
           () => mockApi.get<Map<String, dynamic>>(path: '/auth/me'),
         ).called(1);
+      });
+    });
+
+    group('logout', () {
+      test('skips HTTP when usesMockData is true', () async {
+        final datasource = AuthRemoteDataSourceImpl(
+          config: const AppConfig(
+            apiBaseUrl: 'https://api.example.com',
+            usesMockData: true,
+          ),
+          apiBaseService: mockApi,
+        );
+
+        await datasource.logout();
+
+        verifyNever(
+          () => mockApi.post<Map<String, dynamic>?>(
+            path: any(named: 'path'),
+            data: any(named: 'data'),
+          ),
+        );
+      });
+
+      test('calls POST /auth/logout', () async {
+        when(
+          () => mockApi.post<Map<String, dynamic>?>(
+            path: '/auth/logout',
+            data: const <String, dynamic>{},
+          ),
+        ).thenAnswer(
+          (_) async => ApiResponseModel<Map<String, dynamic>?>(
+            data: const <String, dynamic>{},
+            statusCode: 200,
+          ),
+        );
+
+        final datasource = AuthRemoteDataSourceImpl(
+          config: const AppConfig(
+            apiBaseUrl: 'https://api.example.com',
+            usesMockData: false,
+          ),
+          apiBaseService: mockApi,
+        );
+
+        await datasource.logout();
+
+        verify(
+          () => mockApi.post<Map<String, dynamic>?>(
+            path: '/auth/logout',
+            data: const <String, dynamic>{},
+          ),
+        ).called(1);
+      });
+
+      test('rethrows ApiFailure from the API', () async {
+        final failure = ApiFailure.unknown(Exception('network error'));
+
+        when(
+          () => mockApi.post<Map<String, dynamic>?>(
+            path: '/auth/logout',
+            data: any(named: 'data'),
+          ),
+        ).thenThrow(failure);
+
+        final datasource = AuthRemoteDataSourceImpl(
+          config: const AppConfig(
+            apiBaseUrl: 'https://api.example.com',
+            usesMockData: false,
+          ),
+          apiBaseService: mockApi,
+        );
+
+        await expectLater(
+          datasource.logout(),
+          throwsA(isA<ApiFailure>()),
+        );
       });
     });
   });

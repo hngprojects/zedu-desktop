@@ -7,5 +7,13 @@ abstract interface class AuthRepository {
     required String email,
     required String password,
   });
+  Future<Result<AuthSession>> signUp({
+    required String email,
+    required String password,
+  });
+  Future<Result<void>> forgotPassword({required String email});
   Future<Result<User>> getCurrentUser();
+
+  /// Attempts remote logout, then always clears local session (security-first).
+  Future<void> logout();
 }

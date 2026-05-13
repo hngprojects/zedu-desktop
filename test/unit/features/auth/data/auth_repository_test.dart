@@ -5,14 +5,18 @@ import 'package:zedu/features/features.dart';
 
 class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
+class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
+
 void main() {
   group('AuthRepositoryImpl', () {
     late MockAuthRemoteDataSource mockDatasource;
+    late MockAuthLocalDataSource mockLocal;
     late AuthRepositoryImpl repository;
 
     setUp(() {
       mockDatasource = MockAuthRemoteDataSource();
-      repository = AuthRepositoryImpl(remote: mockDatasource);
+      mockLocal = MockAuthLocalDataSource();
+      repository = AuthRepositoryImpl(remote: mockDatasource, local: mockLocal);
     });
 
     group('login', () {
@@ -111,6 +115,45 @@ void main() {
         final result = await repository.getCurrentUser();
 
         expect(result, isA<Failure<User>>());
+      });
+    });
+
+    group('logout', () {
+      test('clears local session when remote succeeds', () async {
+        when(() => mockDatasource.logout()).thenAnswer((_) async {});
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+
+        await repository.logout();
+
+        verifyInOrder([
+          () => mockDatasource.logout(),
+          () => mockLocal.clearSession(),
+        ]);
+      });
+
+      test('still clears local session when remote throws ApiFailure', () async {
+        when(() => mockDatasource.logout()).thenThrow(
+          const ApiFailure(
+            message: 'Server error',
+            kind: ApiFailureKind.server,
+          ),
+        );
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+
+        await expectLater(repository.logout(), completes);
+
+        verify(() => mockDatasource.logout()).called(1);
+        verify(() => mockLocal.clearSession()).called(1);
+      });
+
+      test('still clears local session when remote throws unexpectedly', () async {
+        when(() => mockDatasource.logout()).thenThrow(Exception('boom'));
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+
+        await expectLater(repository.logout(), completes);
+
+        verify(() => mockDatasource.logout()).called(1);
+        verify(() => mockLocal.clearSession()).called(1);
       });
     });
   });

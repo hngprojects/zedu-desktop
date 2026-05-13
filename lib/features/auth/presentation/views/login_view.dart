@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:zedu/core/core.dart';
 import 'package:zedu/core/theme/app_typography.dart';
 import 'package:zedu/core/utils/validators.dart';
@@ -44,7 +45,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
           type: AppToastType.success,
           message: 'Logged in successfully!',
         );
-        context.go(AppRouter.home);
       }
       if (next.error != null && previous?.error != next.error) {
         AppToastService.show(
@@ -94,6 +94,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           color: context.colors.primary,
                           fontFamily: FontFamily.roboto,
                         ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => context.go(AppRouter.signUp),
                       ),
                     ],
                   ),
@@ -213,12 +215,15 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               const Text('Remember me'),
                             ],
                           ),
-                          Text(
-                            'Forgot Password?',
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: context.colors.primary,
-                              fontFamily: FontFamily.roboto,
+                          GestureDetector(
+                            onTap: () => context.go(AppRouter.forgotPassword),
+                            child: Text(
+                              'Forgot Password?',
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: context.colors.primary,
+                                fontFamily: FontFamily.roboto,
+                              ),
                             ),
                           ),
                         ],
