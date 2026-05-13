@@ -1,9 +1,16 @@
-name: Vulnerability Check Pipepline
+name: Vulnerability check pipeline
 
 on:
   pull_request:
   push:
     branches: [main, develop, dev]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -18,7 +25,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.41.9
+          flutter-version: "3.41.5"
           channel: stable
           cache: true
 
@@ -44,7 +51,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.41.9
+          flutter-version: "3.41.5"
           channel: stable
           cache: true
 
@@ -55,7 +62,7 @@ jobs:
         run: flutter pub get
 
       - name: Vulnerability scan (Trivy)
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           severity: MEDIUM,HIGH,CRITICAL
