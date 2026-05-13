@@ -14,19 +14,11 @@ class WorkspaceView extends StatelessWidget {
       body: SafeArea(
         child: Row(
           children: const [
-            SizedBox(
-              width: _sidebarWidth,
-              child: WorkspaceSidebar(),
-            ),
+            SizedBox(width: _sidebarWidth, child: WorkspaceSidebar()),
             VerticalDivider(width: 1, thickness: 1),
-            Expanded(
-              child: CenterPanel(),
-            ),
+            Expanded(child: CenterPanel()),
             VerticalDivider(width: 1, thickness: 1),
-            SizedBox(
-              width: _rightPanelWidth,
-              child: RightContextPanel(),
-            ),
+            SizedBox(width: _rightPanelWidth, child: RightContextPanel()),
           ],
         ),
       ),

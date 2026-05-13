@@ -12,7 +12,10 @@ class AppRouter {
     initialLocation: login,
     routes: [
       GoRoute(path: login, builder: (context, state) => const LoginView()),
-      GoRoute(path: workspace, builder: (context, state) => const WorkspaceView()),
+      GoRoute(
+        path: workspace,
+        builder: (context, state) => const WorkspaceView(),
+      ),
       GoRoute(path: home, builder: (context, state) => const WorkspaceView()),
     ],
   );
